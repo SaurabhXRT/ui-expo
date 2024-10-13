@@ -1,37 +1,74 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+// layout.tsx
+import React, { useEffect } from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import Home from "./home";
+import RaiseEnquiry from "./raiseenquiry";
+import ExploreFeed from "./explorefeed";
+import { StatusBar } from "expo-status-bar";
+const Drawer = createDrawerNavigator();
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+export default function DrawerLayout() {
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+        <Drawer.Navigator
+          screenOptions={{
+            drawerActiveTintColor: '#F2C4D5', 
+            drawerInactiveTintColor: '#333', 
+            headerShown: false,
+            drawerStyle: {
+              backgroundColor: '#000', 
+            },
+          }}
+        >
+          <Drawer.Screen
+            name="home"
+            component={Home}
+            options={{
+              title: "Home",
+              drawerIcon: ({ color, focused }) => (
+                <Ionicons
+                  name={focused ? "home" : "home-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="raiseenquiry"
+            component={RaiseEnquiry} 
+            options={{
+              title: "Raise Enquiry",
+              drawerIcon: ({ color, focused }) => (
+                <Ionicons
+                  name={focused ? "create" : "create-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="explorefeed"
+            component={ExploreFeed} 
+            options={{
+              title: "Explore Feed",
+              drawerIcon: ({ color, focused }) => (
+                <Ionicons
+                  name={focused ? "newspaper" : "newspaper-outline"}
+                  size={24}
+                  color={color}
+                />
+              ),
+            }}
+          />
+         
+        </Drawer.Navigator>
+
+    </GestureHandlerRootView>
   );
 }
